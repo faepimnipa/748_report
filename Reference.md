@@ -23,7 +23,8 @@ Bioinformatics tools and packages for coding
 - Pls: Liland, K.H., Mevik, B.-H. and Wehrens, R. (2026) ‘Pls: partial least squares and principal component regression’. Available at: https://doi.org/10.32614/CRAN.package.pls.
 - DESeq2: Love, M.I., Huber, W. and Anders, S. (2014) ‘Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2’, Genome Biology, 15(12), p. 550. Available at: https://doi.org/10.1186/s13059-014-0550-8.
 - E1071: Meyer, D., Dimitriadou, E., Hornik, K., Weingessel, A. and Leisch, F. (2025) ‘E1071: misc functions of the department of statistics, probability theory group (Formerly: e1071), tu wien’. Available at: https://doi.org/10.32614/CRAN.package.e1071.
-- MASS and ggVennDiagram: Venables, W.N. and Ripley, B.D. (2002) Modern applied statistics with S. 4th ed. New York: Springer (Statistics and computing). ISBN 0-387-95457-0
+- MASS: Venables, W.N. and Ripley, B.D. (2002) Modern applied statistics with S. 4th ed. New York: Springer (Statistics and computing).
+- GgVennDiagram: Gao, C., Chen, C., Akyol, T., Dusa, A., Yu, G., Cao, B. and Cai, P. (2024) ‘Ggvenndiagram: intuitive venn diagram software extended’, iMeta, 3(1), p. e177. Available at: https://doi.org/10.1002/imt2.177.
 - Ggplot2: Wickham, H. (2016) ‘Data analysis’, in H. Wickham, ggplot2. Cham: Springer International Publishing, pp. 189–201. Available at: https://doi.org/10.1007/978-3-319-24277-4_9.
 - Glmnet:
    - Friedman, J., Hastie, T. and Tibshirani, R. (2010) ‘Regularization paths for generalized linear models via coordinate descent’, Journal of Statistical Software, 33(1). Available at: https://doi.org/10.18637/jss.v033.i01.
