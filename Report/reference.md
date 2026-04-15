@@ -24,6 +24,7 @@ Bioinformatics tools and packages for coding
 - DESeq2: Love, M.I., Huber, W. and Anders, S. (2014) ‘Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2’, Genome Biology, 15(12), p. 550. Available at: https://doi.org/10.1186/s13059-014-0550-8.
 - E1071: Meyer, D., Dimitriadou, E., Hornik, K., Weingessel, A. and Leisch, F. (2025) ‘E1071: misc functions of the department of statistics, probability theory group (Formerly: e1071), tu wien’. Available at: https://doi.org/10.32614/CRAN.package.e1071.
 - MASS: Venables, W.N. and Ripley, B.D. (2002) Modern applied statistics with S. 4th ed. New York: Springer (Statistics and computing).
+- GgVennDiagram: Gao, C., Chen, C., Akyol, T., Dusa, A., Yu, G., Cao, B. and Cai, P. (2024) ‘Ggvenndiagram: intuitive venn diagram software extended’, iMeta, 3(1), p. e177. Available at: https://doi.org/10.1002/imt2.177.
 - Ggplot2: Wickham, H. (2016) ‘Data analysis’, in H. Wickham, ggplot2. Cham: Springer International Publishing, pp. 189–201. Available at: https://doi.org/10.1007/978-3-319-24277-4_9.
 - Glmnet:
    - Friedman, J., Hastie, T. and Tibshirani, R. (2010) ‘Regularization paths for generalized linear models via coordinate descent’, Journal of Statistical Software, 33(1). Available at: https://doi.org/10.18637/jss.v033.i01.
@@ -35,7 +36,8 @@ Bioinformatics tools and packages for coding
    - Andrews, S. (2019). Babraham Bioinformatics - FastQC A Quality Control tool for High Throughput Sequence Data. [online] Babraham.ac.uk. Available at: http://www.bioinformatics.babraham.ac.uk/projects/fastqc/.
    - Ewels, P., Magnusson, M., Lundin, S. and Käller, M. (2016) ‘MultiQC: summarize analysis results for multiple tools and samples in a single report’, Bioinformatics, 32(19), pp. 3047–3048. Available at: https://doi.org/10.1093/bioinformatics/btw354.
      
-- Genome Assembly (Flye)
+- Genome Assembly 
+   - Bankevich, A., Nurk, S., Antipov, D., Gurevich, A.A., Dvorkin, M., Kulikov, A.S., Lesin, V.M., Nikolenko, S.I., Pham, S., Prjibelski, A.D., Pyshkin, A.V., Sirotkin, A.V., Vyahhi, N., Tesler, G., Alekseyev, M.A. and Pevzner, P.A. (2012) ‘Spades: a new genome assembly algorithm and its applications to single-cell sequencing’, Journal of Computational Biology, 19(5), pp. 455–477. Available at: https://doi.org/10.1089/cmb.2012.0021.
    - Kolmogorov, M., Yuan, J., Lin, Y. and Pevzner, P.A. (2019) ‘Assembly of long, error-prone reads using repeat graphs’, Nature Biotechnology, 37(5), pp. 540–546. Available at: https://doi.org/10.1038/s41587-019-0072-8.
      
 - Assembly Evaluation (QUAST)
