@@ -1,0 +1,11 @@
+14:14:25.551 - INFO - UTILS - version=1.12.0
+14:14:25.551 - INFO - UTILS - developer: Oliver Schwengers, github.com/oschwengers
+14:14:25.551 - INFO - UTILS - command: /home/faepimnipa/miniconda3/envs/bakta/bin/bakta --db db-light --output /home/faepimnipa/748/report/result/bakta_GN6 /home/faepimnipa/748/report/result/GN6_long/assembly.fasta
+14:14:25.551 - INFO - UTILS - local time: 2026-03-26 14:14:25
+14:14:25.552 - INFO - UTILS - machine: type=x86_64, cores=8
+14:14:25.552 - INFO - UTILS - system: type=Linux, release=6.6.87.2-microsoft-standard-WSL2
+14:14:25.552 - INFO - UTILS - python: version=3.13.12, implementation=CPython
+14:14:25.552 - INFO - CONFIG - threads=8
+14:14:25.553 - INFO - CONFIG - verbose=False
+14:14:25.553 - INFO - CONFIG - debug=False
+14:14:25.553 - ERROR - CONFIG - unvalid database path: type=parameter, path=/home/faepimnipa/748/report/result/bakta_GN6/db-light
