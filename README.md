@@ -17,29 +17,29 @@ _Research question: How do leading genome assembly (Flye, SPAdes) and annotation
       - (https://www.qiagen.com/us/products/discovery-and-translationalresearch/dna-rna-purification/dna-purification/microbialdna/dneasy-powermax-soil-kit)
     - Library preparation: SMRTbell prep kit 3.0 (size selection?) 
       - (https://www.pacb.com/products-and-services/consumables/library-prep-and-barcoding-kits/)
-    - Sequencing and base-calling: Sequencing was done on an Sequel IIe machine, with basecalling by SMRT LINK V13.0 (using manufactures settings for HiFi reads).
+    - Sequencing and base-calling: Sequencing was done on a Sequel IIe machine, with base-calling by SMRT LINK V13.0 (using manufacturer's settings for HiFi reads).
   - Compare and benchmark assembly outputs focusing on summary metrics including: total assembly size, number of contigs, N50, largest contig length, assembly completeness, and computational resource usage (runtime and memory). Are there any other metrics to include that would be useful for the genomics community? If so, include them and justify with reasoning.
   - Perform genome annotation using Prokka and Bakta pipelines.
-  - Evaluate annotations by comparing total gene count, coding sequence predictions, ribosomal and transfer RNA genes detected, functional annotation coverage, and runtime e iciency. Are there any other metrics to include that would be useful for the genomics community? If so, include them and justify with reasoning.
-  - Create figures to compare genome assembly summary metrics and gene annotations – look at published papers to gain inspiration on how best to visualise and compare these datasets between di erent tools.
+  - Evaluate annotations by comparing total gene count, coding sequence predictions, ribosomal and transfer RNA genes detected, functional annotation coverage, and runtime efficiency. Are there any other metrics to include that would be useful for the genomics community? If so, include them and justify with reasoning.
+  - Create figures to compare genome assembly summary metrics and gene annotations – look at published papers to gain inspiration on how best to visualise and compare these datasets between different tools.
   - Refer to the ‘LIFE748 Genome Assembly/Annotation’ workshop materials for additional guidance on methods
     
-### 2. Machine Learning Analysis of Di erential Expression 
+### 2. Machine Learning Analysis of Differential Expression 
 _Research question: Can machine learning approaches (unsupervised clustering and supervised classification) robustly discriminate experimental conditions from E. coli gene expression profiles, and which expression features emerge as the most biologically informative markers?_
   - Analyse the provided count matrix of DEGs from two experimental conditions.
   - Apply unsupervised clustering (e.g., k-means, hierarchical clustering) to identify groupings in gene expression data.
   - Perform supervised classification using logistic regression, Linear Discriminant Analysis (LDA), and Support Vector Machines (SVM) to distinguish conditions based on expression profiles.
-  - Evaluate model performance with accuracy, sensitivity, specificity, and cross validation metrics, and interpret biologically meaningful markers.
-  - NOTE: the code for the initial processing of the data is available in the .qmd file – please upload the quarto document (or the R script) you use to perform the analysis with your submission as a supplementary material file 
+  - Evaluate model performance with accuracy, sensitivity, specificity, and cross-validation metrics, and interpret biologically meaningful markers.
+  - NOTE: the code for the initial processing of the data is available in the .qmd file – please upload the Quarto document (or the R script) you use to perform the analysis with your submission as a supplementary material file 
 
-### 3. Structural Bioinformatics of Di erentially Expressed Genes 
-_Research question: To what extent can structural modelling (AlphaFold) of di erentially expressed proteins and application of structure-based function annotation methods, shed light on their roles?_
-  - Select a subset of DEGs, including key TFs that are di erentially expressed between conditions.
+### 3. Structural Bioinformatics of Differentially Expressed Genes 
+_Research question: To what extent can structural modelling (AlphaFold) of differentially expressed proteins and application of structure-based function annotation methods shed light on their roles?_
+  - Select a subset of DEGs, including key TFs that are differentially expressed between conditions.
       1. Think about a biological rationale for selecting the TFs that you focus on further – do they have a role of interest to E. coli function? Are they associated with toxicity or resistance?
       2. Consider starting with one or two TFs and going from there ..
   - Extract protein sequences for these DEGs from the genome annotations (in Part 1).
   - Use AlphaFold to predict high-confidence protein structures for the selected proteins.
-  - Use structure-based function annotation to predict/confirm functional sites e.g. DNA-binding sites for the TFs. Examples could include:
+  - Use structure-based function annotation to predict/confirm functional sites, e.g. DNA-binding sites for the TFs. Examples could include:
 
 ### Data Availability 
 To avoid any collusion, unique data will be provided to each of you, covering Parts 1 and 2 
@@ -48,5 +48,9 @@ above.  Part 3 involves using outputs from Part 2.
 ### Bioinformatics Workflow
 
 ### Repository Contents
+The `Report` folder contains the following `md` files, which list the command line inputs, data outputs 
+- 
 
+The `Results` folder contains the following files:
+- `
 
