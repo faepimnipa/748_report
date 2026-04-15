@@ -16,26 +16,15 @@ _Research question: How do leading genome assembly (Flye, SPAdes) and annotation
     - DNA extraction methods: DNA was isolated with a Qiagen Power Max Soil kit following the manufacturer's instructions.
       - (https://www.qiagen.com/us/products/discovery-and-translationalresearch/dna-rna-purification/dna-purification/microbialdna/dneasy-powermax-soil-kit)
     - Library preparation: SMRTbell prep kit 3.0 (size selection?) 
-      - https://www.pacb.com/products-and-services/consumables/library-prep-and-barcoding-kits/ Links to an external site. 
-§ Sequencing and base-calling: Sequencing was done on an Sequel IIe 
-machine, with basecalling by SMRT LINK V13.0 (using manufactures settings 
-for HiFi reads). 
-o Compare and benchmark assembly outputs focusing on summary metrics 
-including: total assembly size, number of contigs, N50, largest contig length, 
-assembly completeness, and computational resource usage (runtime and memory). 
-Are there any other metrics to include that would be useful for the genomics 
-community? If so, include them and justify with reasoning. 
-o Perform genome annotation using Prokka and Bakta pipelines. 
-o Evaluate annotations by comparing total gene count, coding sequence predictions, 
-ribosomal and transfer RNA genes detected, functional annotation coverage, and 
-runtime e iciency. Are there any other metrics to include that would be useful for 
-the genomics community? If so, include them and justify with reasoning. 
-o Create figures to compare genome assembly summary metrics and gene 
-annotations – look at published papers to gain inspiration on how best to visualise 
-and compare these datasets between di erent tools.  
-o Refer to the ‘LIFE748 Genome Assembly/Annotation’ workshop materials for 
-additional guidance on methods 
-2. Machine Learning Analysis of Di erential Expression 
+      - (https://www.pacb.com/products-and-services/consumables/library-prep-and-barcoding-kits/)
+    - Sequencing and base-calling: Sequencing was done on an Sequel IIe machine, with basecalling by SMRT LINK V13.0 (using manufactures settings for HiFi reads).
+  - Compare and benchmark assembly outputs focusing on summary metrics including: total assembly size, number of contigs, N50, largest contig length, assembly completeness, and computational resource usage (runtime and memory). Are there any other metrics to include that would be useful for the genomics community? If so, include them and justify with reasoning.
+  - Perform genome annotation using Prokka and Bakta pipelines.
+  - Evaluate annotations by comparing total gene count, coding sequence predictions, ribosomal and transfer RNA genes detected, functional annotation coverage, and runtime e iciency. Are there any other metrics to include that would be useful for the genomics community? If so, include them and justify with reasoning.
+  - Create figures to compare genome assembly summary metrics and gene annotations – look at published papers to gain inspiration on how best to visualise and compare these datasets between di erent tools.
+  - Refer to the ‘LIFE748 Genome Assembly/Annotation’ workshop materials for additional guidance on methods
+    
+### 2. Machine Learning Analysis of Di erential Expression 
 Research question: Can machine learning approaches (unsupervised clustering and supervised 
 classification) robustly discriminate experimental conditions from E. coli gene expression 
 profiles, and which expression features emerge as the most biologically informative markers? 
