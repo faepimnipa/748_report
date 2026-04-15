@@ -31,3 +31,21 @@ Bioinformatics tools and packages for coding
    - Tay, J.K., Narasimhan, B. and Hastie, T. (2023) ‘Elastic net regularization paths for all generalized linear models’, Journal of Statistical Software, 106(1). Available at: https://doi.org/10.18637/jss.v106.i01.
 
 ### Bioinnformatics tools 
+- Quality Control (QC)
+   - Andrews, S. (2019). Babraham Bioinformatics - FastQC A Quality Control tool for High Throughput Sequence Data. [online] Babraham.ac.uk. Available at: http://www.bioinformatics.babraham.ac.uk/projects/fastqc/.
+   - Ewels, P., Magnusson, M., Lundin, S. and Käller, M. (2016) ‘MultiQC: summarize analysis results for multiple tools and samples in a single report’, Bioinformatics, 32(19), pp. 3047–3048. Available at: https://doi.org/10.1093/bioinformatics/btw354.
+     
+- Genome Assembly (Flye)
+   - Kolmogorov, M., Yuan, J., Lin, Y. and Pevzner, P.A. (2019) ‘Assembly of long, error-prone reads using repeat graphs’, Nature Biotechnology, 37(5), pp. 540–546. Available at: https://doi.org/10.1038/s41587-019-0072-8.
+     
+- Assembly Evaluation (QUAST)
+   - Gurevich, A., Saveliev, V., Vyahhi, N. and Tesler, G. (2013) ‘QUAST: quality assessment tool for genome assemblies’, Bioinformatics, 29(8), pp. 1072–1075. Available at: https://doi.org/10.1093/bioinformatics/btt086.
+
+- Genome Annotation
+   - Schwengers, O., Jelonek, L., Dieckmann, M.A., Beyvers, S., Blom, J. and Goesmann, A. (2021) ‘Bakta: rapid and standardized annotation of bacterial genomes via alignment-free sequence identification: Find out more about Bakta, the motivation, challenges and applications, here.’, Microbial Genomics, 7(11). Available at: https://doi.org/10.1099/mgen.0.000685.
+   - Seemann, T. (2014) ‘Prokka: rapid prokaryotic genome annotation’, Bioinformatics, 30(14), pp. 2068–2069. Available at: https://doi.org/10.1093/bioinformatics/btu153.
+     
+- Data Extraction (Grep/Cut)
+```bash
+grep -E 'CDS:|rRNA:|tRNA:' GN6_prokka.txt
+```
