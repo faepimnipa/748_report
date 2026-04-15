@@ -25,35 +25,26 @@ _Research question: How do leading genome assembly (Flye, SPAdes) and annotation
   - Refer to the ‘LIFE748 Genome Assembly/Annotation’ workshop materials for additional guidance on methods
     
 ### 2. Machine Learning Analysis of Di erential Expression 
-Research question: Can machine learning approaches (unsupervised clustering and supervised 
-classification) robustly discriminate experimental conditions from E. coli gene expression 
-profiles, and which expression features emerge as the most biologically informative markers? 
-o Analyse the provided count matrix of DEGs from two experimental conditions. 
-o Apply unsupervised clustering (e.g., k-means, hierarchical clustering) to identify 
-groupings in gene expression data. 
-o Perform supervised classification using logistic regression, Linear Discriminant 
-Analysis (LDA), and Support Vector Machines (SVM) to distinguish conditions based 
-on expression profiles. 
-o Evaluate model performance with accuracy, sensitivity, specificity, and cross
-validation metrics, and interpret biologically meaningful markers. 
-o NOTE: the code for the initial processing of the data is available in the .qmd file – 
-please upload the quarto document (or the R script) you use to perform the 
-analysis with your submission as a supplementary material file 
-3. Structural Bioinformatics of Di erentially Expressed Genes 
-Research question: To what extent can structural modelling (AlphaFold) of di erentially 
-expressed proteins and application of structure-based function annotation methods, shed light 
-on their roles? 
-o Select a subset of DEGs, including key TFs that are di erentially expressed between 
-conditions. 
-1. Think about a biological rationale for selecting the TFs that you focus on 
-further – do they have a role of interest to E. coli function? Are they 
-associated with toxicity or resistance? 
-2. Consider starting with one or two TFs and going from there ..  
-o Extract protein sequences for these DEGs from the genome annotations (in Part 1). 
-o Use AlphaFold to predict high-confidence protein structures for the selected 
-proteins. 
-o Use structure-based function annotation to predict/confirm functional sites e.g. 
-DNA-binding sites for the TFs. Examples could include: 
-Data Availability 
+_Research question: Can machine learning approaches (unsupervised clustering and supervised classification) robustly discriminate experimental conditions from E. coli gene expression profiles, and which expression features emerge as the most biologically informative markers?_
+  - Analyse the provided count matrix of DEGs from two experimental conditions.
+  - Apply unsupervised clustering (e.g., k-means, hierarchical clustering) to identify groupings in gene expression data.
+  - Perform supervised classification using logistic regression, Linear Discriminant Analysis (LDA), and Support Vector Machines (SVM) to distinguish conditions based on expression profiles.
+  - Evaluate model performance with accuracy, sensitivity, specificity, and cross validation metrics, and interpret biologically meaningful markers.
+  - NOTE: the code for the initial processing of the data is available in the .qmd file – please upload the quarto document (or the R script) you use to perform the analysis with your submission as a supplementary material file 
+
+### 3. Structural Bioinformatics of Di erentially Expressed Genes 
+_Research question: To what extent can structural modelling (AlphaFold) of di erentially expressed proteins and application of structure-based function annotation methods, shed light on their roles?_
+  - Select a subset of DEGs, including key TFs that are di erentially expressed between conditions.
+      1. Think about a biological rationale for selecting the TFs that you focus on further – do they have a role of interest to E. coli function? Are they associated with toxicity or resistance?
+      2. Consider starting with one or two TFs and going from there ..
+  - Extract protein sequences for these DEGs from the genome annotations (in Part 1).
+  - Use AlphaFold to predict high-confidence protein structures for the selected proteins.
+  - Use structure-based function annotation to predict/confirm functional sites e.g. DNA-binding sites for the TFs. Examples could include:
+
+### Data Availability 
 To avoid any collusion, unique data will be provided to each of you, covering Parts 1 and 2 
 above.  Part 3 involves using outputs from Part 2.  
+
+### Suggested Reading 
+Below are links to six suitable papers (two per topic area) that model scientific writing and largely align with your E. coli / methods focus. All are primary research articles with clear abstract–methods–results–discussion structure, and more. All papers are found on Canvas.  
+
