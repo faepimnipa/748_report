@@ -1,0 +1,27 @@
+# AlphaFold 
+Predicting a protein's 3D structure from its primary amino acid sequence has been a grand challenge in biological science for over 50 years. __AlphaFold__, developed by Google DeepMind, revolutionised this field by utilising deep learning to achieve accuracy comparable to experimental methods like X-ray crystallography. While __AlphaFold 2__ focused primarily on single-protein chains and multimeric complexes, __AlphaFold 3__ represents a paradigm shift, expanding the model's capabilities to include modelling of DNA, RNA, ligands, and post-translational modifications.
+
+## __AlphaFold 2: Evolutionary Context and Structure Constraints__
+AlphaFold 2 operates on the principle that evolutionarily related proteins share structural similarities. Its architecture is divided into three primary stages.
+
+  __Stage 1: Data Preparation and Multiple Sequence Alignment (MSA)__
+The model begins by searching genetic databases to find sequences homologous to the target protein. These are aligned into an MSA. The model looks for co-evolutionary patterns—if two amino acids consistently mutate together, they are likely physically close in the 3D structure.
+
+  __Stage 2: The Evoformer Block__
+The Evoformer is the "brain" of AlphaFold 2. It processes the MSA and a "pair representation" (a map of possible distances between all pairs of residues) simultaneously. It uses an attention mechanism to refine these representations, passing information back and forth to build a consistent internal hypothesis of the protein's geometry.
+
+  __Stage 3: Structure Module__
+The abstract information from the Evoformer is converted into 3D coordinates. This module treats each amino acid as a "gas" of floating triangles that eventually settle into a rigid-body orientation. The model then performs "recycling," passing the predicted structure back through the network to iteratively improve accuracy.
+
+## __AlphaFold 3: Diffusion-Based Biomolecular Modelling__
+AlphaFold 3 departs from the Evoformer-centric approach of its predecessor, utilising a Diffusion Module to predict structures for a much wider array of molecular interactions.
+
+  __Stage 1: Input Embedding and Template Processing__
+Unlike AF2, which relied heavily on large MSAs, AlphaFold 3 uses a simplified Pairformer module. It processes the input sequence alongside chemical descriptions of ligands, nucleic acids, and ions. It reduces the reliance on deep MSAs, allowing it to predict structures for proteins with few known homologs.
+
+  __Stage 2: The Diffusion Module__
+This is the core innovation of AlphaFold 3. The model starts with a "cloud" of random atoms (molecular noise). Through a process called diffusion, the model learns to "de-noise" the cloud, iteratively moving every atom toward its most chemically plausible position. This allows the model to handle the high flexibility of ligands and disordered protein regions.
+
+  __Stage 3: All-Atom Prediction and Scoring__
+In the final stage, AlphaFold 3 produces a unified 3D coordinate set for the entire molecular system (e.g., a protein bound to a drug molecule and a strand of DNA). It provides a per-residue confidence score (pLDDT) and a predicted alignment error (PAE) to indicate the reliability of the relative positions of different molecules in the complex.
+
