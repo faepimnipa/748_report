@@ -1,0 +1,586 @@
+---
+title: "LIFE748 - ML and data analysis"
+author: "Francesco Del Carratore"
+format: html
+editor: visual
+---
+
+## Introduction
+
+In this tutorial, we will analyze a simulated RNA-seq dataset. Our goal is to identify Differentially Expressed Genes (DEGs) between two conditions (Condition A and Condition B), visualize the results, and use both unsupervised and supervised machine learning techniques to classify the samples based on their gene expression profiles.
+
+## Step 0: Load the required libraries
+
+```{r warning=FALSE, message=FALSE }
+library(DESeq2) # Bioconductor
+library(ggplot2) # CRAN
+library(EnhancedVolcano) # Bioconductor
+library(pheatmap) # Bioconductor
+library(caret) # CRAN
+library(MASS) # CRAN
+library(e1071) # CRAN
+library(pls) # PLS-DA
+library(glmnet) # Regularised logistic regression for classification
+library(ggVennDiagram) # Venn diagram
+```
+
+```{r}
+citation("ggVennDiagram")
+```
+
+If these packages are not already available, you will need to install them either from CRAN (install.packages('package_name')), or from Bioconductor (BiocManager::install('package_name')
+
+## Step 1: Load the Count Matrix
+
+First, we load the raw count matrix and set up the sample metadata (phenotype data). We assume the first 25 columns belong to Condition A, and the next 25 belong to Condition B.
+
+```{r}
+# Read the CSV file - row.names=1 sets the first column (gene names) as row names
+counts <- read.csv("dataset_LIFE748_2.csv", row.names = 1)
+
+# Create a metadata table (colData) each condition
+colData <- data.frame(
+  row.names = colnames(counts),# match with count matrix column
+  Condition = c(rep('CondA',25),rep('CondB',25)) # First 25 = condition A, next 25 = condition B
+)
+# Check matching
+cat("Count matrix dimensions:", dim(counts), "\n")
+cat("Metadata rows:", nrow(colData), "\n")
+```
+
+## Step 2: Normalize and Identify DEGs with DESeq2
+
+We will use `DESeq2` to normalize the library sizes and perform statistical testing to identify which genes are differentially expressed between Condition B and Condition A.
+
+```{r}
+# Create the DESeq2 dataset object
+dds <- DESeqDataSetFromMatrix(countData = counts,
+                              colData = colData,
+                              design = ~ Condition)
+
+# Run the DESeq2 pipeline
+dds <- DESeq(dds)
+
+# Extract the results (Condition B vs Condition A)
+res <- results(dds)
+
+# Convert this object into a dataframe for easier visualisation (optional)
+res <- as.data.frame(res)
+
+# Extract normalized counts for downstream machine learning
+vsd <- vst(dds, blind = FALSE) # Variance stabilizing transformation
+normalized_counts <- assay(vsd)
+
+# Summary of results
+cat("Total genes tested:", nrow(res), "\n")
+cat("Genes with padj < 0.05:", sum(res$padj < 0.05, na.rm = TRUE), "\n")
+
+```
+
+## Step 3: Report DEGs (Table and Volcano Plot)
+
+We define statistically significant DEGs as those with an adjusted p-value (FDR) \< 0.05 and an absolute log2 Fold Change \> 1.
+
+```{r}
+ res <- as.data.frame(res)
+ EnhancedVolcano(res,
+                lab = rownames(res),
+                x = 'log2FoldChange',
+                y = 'pvalue')
+ 
+```
+
+Generate a volcano plot to visualise the results
+
+```{r}
+# Volcano plot 
+EnhancedVolcano(res,
+                lab = rownames(res), # Gene labels
+                x = 'log2FoldChange', # Effect size on x-axis
+                y = 'padj', # FDR-adjusted p-value onn y-axis
+                title = 'Condition A versus Condition B',
+                pCutoff = 0.05, # Significance threshold
+                FCcutoff = 1,
+                pointSize = 3.0,
+                labSize = 6.0)
+
+```
+
+## Step 4: Isolate Differentially Expressed Genes
+
+To reduce noise and dimensionality for our machine learning algorithms, we will subset our normalized count matrix to only include the statistically significant DEGs identified above.
+
+In order to make sure we don't lose too much information, let's relax a bit the thresholds for significance
+
+```{r}
+# Strict thresholds: padj < 0.05, log2FC >= 1 (2-fold change)
+DEGmat <- normalized_counts[which(res$padj<=0.05 & abs(res$log2FoldChange)>=1),]
+
+# Relaxed thresholds: padj < 0.1, log2FC >= 0.58 (~1.5-fold change)
+# Gives more features for ML, at the cost of including noisier genes
+DEGmat_relax <- normalized_counts[which(res$padj<=0.1 & abs(res$log2FoldChange)>=0.58),]
+
+cat("Strict DEGs:", nrow(DEGmat), "\n")
+cat("Relaxed DEGs:", nrow(DEGmat_relax), "\n")
+```
+
+```{r}
+# Save top significant genes for Part 3 (Structural Bioinformatics)
+res_sorted <- res[order(res$padj), ]
+top_targets <- subset(res_sorted, padj < 0.01 & abs(log2FoldChange) > 2)
+write.csv(rownames(top_targets), "most_significant_genes.csv", row.names = FALSE)
+cat("Save top significant genes", nrow(top_targets), "genes to most_significant_genes.csv\n")
+```
+
+## Step 5: Unsupervised Clustering
+
+Let's see if the samples naturally group by their condition without explicitly telling the algorithm which sample belongs to which group. We will use Hierarchical Clustering and K-means.
+
+### k-means
+
+```{r}
+#k-means (strict DEGs)
+set.seed(123)
+out <- kmeans(t(DEGmat), centers = 2,# 2 groups (CondA,B)
+              iter.max = 15, nstart = 5)
+out
+
+```
+
+```{r}
+# PCA for visualisation
+pca_out <- prcomp(t(DEGmat), center = TRUE, scale. = TRUE)
+
+pca_df <- as.data.frame(pca_out$x) # PC scores for each sample
+
+pca_df$clusters <- as.factor(out$cluster) # Add cluster as a factor
+
+# Calculate the percentage of variance explained by each PC
+var_explained <- pca_out$sdev^2 / sum(pca_out$sdev^2) * 100 
+
+centroids <- aggregate(cbind(PC1, PC2) ~ clusters, data = pca_df, FUN = mean)
+
+ggplot(pca_df, aes(x = PC1, y = PC2, col = clusters)) +
+  geom_point(size = 3, alpha = 0.6) +
+  stat_ellipse() + # Draws a confidence ellipse around each cluster
+  geom_point(data = centroids, 
+             aes(x = PC1, y = PC2, fill = clusters), 
+             shape = 24, size = 5, col = "black", stroke = 1.5) +
+  theme(panel.background = element_rect(fill = "white", colour = "black", linewidth = 1),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        text = element_text(size = 20, colour = "black", face = "bold"),
+        legend.key = element_blank()) +
+  labs(title = "PCA of K-means Clusters (Strict DEGs)",
+       x     = paste0("PC1 (", round(var_explained[1], 1), "%)"),  # Show variance %
+       y     = paste0("PC2 (", round(var_explained[2], 1), "%)"))
+```
+
+### K-means - relax
+
+```{r}
+#k-means
+set.seed(123)
+out_relax <- kmeans(t(DEGmat_relax), centers = 2, iter.max = 15, nstart = 5)
+out_relax
+```
+
+```{r}
+pca_out_r <- prcomp(t(DEGmat_relax), center = TRUE, scale. = TRUE)
+
+pca_df_r <- as.data.frame(pca_out_r$x)
+
+pca_df_r$clusters <- as.factor(out_relax$cluster)
+
+var_explained_r <- pca_out_r$sdev^2 / sum(pca_out_r$sdev^2) * 100
+
+ggplot(pca_df_r, aes(x = PC1, y = PC2, col = clusters)) +
+  geom_point(size = 3) +
+  stat_ellipse() +
+  theme(panel.background = element_rect(fill = "white", colour = "black", linewidth = 1),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        text = element_text(size = 20, colour = "black", face = "bold"),
+        legend.key = element_blank()) +
+  labs(title = "PCA of K-means Clusters (Relaxed DEGs)",
+       x     = paste0("PC1 (", round(var_explained_r[1], 1), "%)"),
+       y     = paste0("PC2 (", round(var_explained_r[2], 1), "%)"))
+```
+
+Elbow test
+
+Compare and plot within clusters sum of squares for k= 1:10
+
+```{r}
+k.max <- 10
+
+# Strict DEGs
+wss_strict <- sapply(1:k.max,
+              function(k){kmeans(t(DEGmat), k, nstart= 5,iter.max = 15 )$tot.withinss})
+
+plot(1:k.max, wss_strict,
+     type="b", pch = 19, frame = FALSE,
+     xlab="Number of clusters K",
+     ylab="Total within-clusters sum of squares",
+     main = "Elbow Test - Strict DEGs")
+```
+
+```{r}
+# Relaxed DEGs
+wss_relax <- sapply(1:k.max,
+              function(k){kmeans(t(DEGmat_relax), k, nstart= 5,iter.max = 15 )$tot.withinss})
+
+plot(1:k.max, wss_relax,
+     type="b", pch = 19, frame = FALSE,
+     xlab="Number of clusters K",
+     ylab="Total within-clusters sum of squares",
+     main = "Elbow Test - Relaxed DEGs")
+```
+
+### hierarchical clustering
+
+```{r}
+dist_mat <- dist(t(DEGmat), method = 'euclidean')
+as.matrix(dist_mat)[1:5,1:5] # lookinng only at the first 5 columns and rows for simplicity
+## this is a Euclidean distance
+```
+
+```{r}
+hclust <- hclust(dist_mat, method = 'average')
+plot(hclust, main = "Hierarchical Clustering Dendrogram",
+     xlab = "Samples", sub = "Euclidean distance, average linkage")
+```
+
+Visualise the results (HINT: a heatmap would be perfect for this).
+
+```{r}
+colData$kmean <- as.factor(out$cluster)
+pheatmap(DEGmat, 
+         cluster_rows = FALSE, 
+         clustering_method = 'average', 
+         annotation_col = colData,
+         main = "Heatmap of Strict DEGs with K-means Annotation",
+         fontsize = 8)
+```
+
+## Step 6: Supervised Learning (LDA and SVM)
+
+Next, we train classifiers to predict the condition of a sample based on its DEG expression profile. We will split the data into a training set (70%) and a testing set (30%).
+
+```{r}
+set.seed(123)
+df <- as.data.frame(t(DEGmat))
+df$condition <- colData$Condition
+trainIndex <- createDataPartition(df$condition, p=0.7, list = FALSE, times = 1)
+df_train <- df[trainIndex,] # 70% training
+df_validate <- df[-trainIndex,] # 30% validation 
+feature_cols <- colnames(df_train)[colnames(df_train) != "condition"]
+
+cat("Training samples:", nrow(df_train), "\n")
+cat("Validation samples:", nrow(df_validate), "\n")
+cat("Features (DEGs):", length(feature_cols), "\n")
+```
+
+### Train LDA (Linear Discriminant Analysis)
+
+```{r}
+df_train$condition <- as.factor(df_train$condition)
+
+model_LDA <- lda(condition~., data = df_train)
+model_LDA
+```
+
+```{r}
+# Top 10 genes by LDA 
+lda_coefs <- abs(model_LDA$scaling[, 1])
+top_lda   <- sort(lda_coefs, decreasing = TRUE)[1:10]
+cat("Top 10 discriminative genes (LDA):\n")
+print(top_lda)
+```
+
+```{r}
+# Example scatter plot of two highly discriminative genes
+ggplot(df_train, aes(x = b3593, y = b2952)) +
+  geom_point(aes(col = condition)) +
+  theme(
+    panel.background = element_rect(fill = "white", colour = "black",
+                                    linewidth = 1, linetype = "solid"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    text = element_text(size = 20, colour = "black", face = "bold"),
+    legend.key = element_blank()
+  )
+```
+
+```{r}
+pred_LDA <- predict(model_LDA, newdata = df_validate, type="condition")
+
+CM_LDA = confusionMatrix(data = as.factor(pred_LDA$class), as.factor(df_validate$condition))
+CM_LDA
+```
+
+### Train SVM (Support Vector Machine)
+
+```{r}
+model_SVM <- svm(condition~., data = df_train, 
+                 kernel = "radial",
+                 probability = TRUE)
+summary(model_SVM)
+
+```
+
+```{r}
+pred_svm <- predict(model_SVM, newdata = df_validate, type="condition")
+
+CM_svm = confusionMatrix(data = as.factor(pred_svm), as.factor(df_validate$condition))
+CM_svm
+
+```
+
+### Train Logistic Regression
+
+```{r}
+X_train <- as.matrix(df_train[, feature_cols])
+Y_train <- ifelse(df_train$condition == "CondA", 0, 1)
+
+model_LR <- cv.glmnet(X_train, Y_train, alpha = 1, family = "binomial")
+
+X_val <- as.matrix(df_validate[, feature_cols])
+pred_LR_prob <- predict(model_LR, newx = X_val, s = "lambda.min", type = "response")
+pred_LR <- ifelse(pred_LR_prob > 0.5, "CondB", "CondA") # threshold at 0.05
+
+CM_LR <- confusionMatrix(
+  data      = as.factor(pred_LR),
+  reference = as.factor(df_validate$condition)
+)
+CM_LR
+```
+
+### PLS-DA
+
+```{r}
+model_PLSDA <- plsda(df_train[, feature_cols],
+                     as.factor(df_train$condition),
+                     ncomp = 2, cv = 10)
+model_PLSDA
+```
+
+```{r}
+plotdata <- data.frame(
+  Comp1 = model_PLSDA$scores[, 1],
+  Comp2 = model_PLSDA$scores[, 2],
+  class = df_train$condition
+)
+
+ggplot(plotdata, aes(x = Comp1, y = Comp2, col = class)) +
+  geom_point(size = 2) +
+  scale_color_manual(values = c("red", "blue")) +
+  theme(panel.background = element_blank())
+```
+
+```{r}
+pred_PLSDA <- predict(model_PLSDA,
+                      newdata = df_validate[, feature_cols], ncomp = 2)
+CM_PLS <- confusionMatrix(
+  data      = as.factor(pred_PLSDA),
+  reference = as.factor(df_validate$condition)
+)
+CM_PLS
+```
+
+## Step 7: Compare Classifier Performance
+
+Finally, we use confusion matrices to evaluate and compare how well LDA and SVM performed on the unseen test dataset.
+
+```{r}
+comparison <- data.frame(
+  Model       = c("LDA", "SVM", "Logistic Regression", "PLS-DA"),
+  Accuracy    = c(CM_LDA$overall["Accuracy"], CM_svm$overall["Accuracy"],
+                  CM_LR$overall["Accuracy"],  CM_PLS$overall["Accuracy"]),
+  Kappa       = c(CM_LDA$overall["Kappa"],    CM_svm$overall["Kappa"],
+                  CM_LR$overall["Kappa"],     CM_PLS$overall["Kappa"]),
+  Sensitivity = c(CM_LDA$byClass["Sensitivity"], CM_svm$byClass["Sensitivity"],
+                  CM_LR$byClass["Sensitivity"],  CM_PLS$byClass["Sensitivity"]),
+  Specificity = c(CM_LDA$byClass["Specificity"], CM_svm$byClass["Specificity"],
+                  CM_LR$byClass["Specificity"],  CM_PLS$byClass["Specificity"])
+)
+print(comparison)
+```
+
+LDA and SVM disagree
+
+```{r}
+comparison_results <- data.frame(
+  SampleID      = rownames(df_validate),
+  True_Condition = df_validate$condition,
+  LDA_Pred      = pred_LDA$class,
+  SVM_Pred      = as.character(pred_svm)
+)
+comparison_results$Models_Agree  <- comparison_results$LDA_Pred == comparison_results$SVM_Pred
+comparison_results$Both_Correct  <-
+  (comparison_results$LDA_Pred == comparison_results$True_Condition) &
+  (comparison_results$SVM_Pred == comparison_results$True_Condition)
+
+disagreements <- comparison_results[!comparison_results$Models_Agree, ]
+print(disagreements)
+```
+
+```{r}
+df_validate$Comparison <- ifelse(comparison_results$Models_Agree, "Agree", "Disagree")
+
+ggplot(df_validate, aes(x = b0032, y = b0033,
+                         color = condition, shape = Comparison)) +
+  geom_point(size = 4) +
+  scale_shape_manual(values = c(16, 4)) +
+  labs(title    = "Samples Where LDA and SVM Disagree",
+       subtitle = "× = disagreement between models") +
+  theme_minimal()
+```
+
+10-fold Cross-Validation (more robust comparison)
+
+a single 70/30 split is sensitive to which samples land in each fold.
+
+Cross-validation gives a fairer picture.
+
+```{r}
+ctrl <- trainControl(method = "cv", number = 10)  # 10-fold CV
+
+# LDA with CV
+cv_LDA <- train(condition ~ ., data = df_train, method = "lda",  trControl = ctrl)
+
+# SVM with CV
+cv_SVM <- train(condition ~ ., data = df_train, method = "svmRadial", trControl = ctrl)
+
+# Logistic Regression with CV
+cv_LR  <- train(condition ~ ., data = df_train, method = "glmnet", trControl = ctrl)
+
+# Compare all
+cv_results <- resamples(list(LDA = cv_LDA, SVM = cv_SVM, LR = cv_LR))
+summary(cv_results)
+dotplot(cv_results)
+```
+
+## Step 8: Is this enough?
+
+is this enough to compare the classifiers? What if you use a k-fold cross-validation approach? Will you get similar results with different random splits?
+
+### Compare and visualize the gene overlaps.
+
+to compare and visualize the gene overlaps. By using Venn diagram to show the overlap visually
+
+```{r}
+# Get top 10 genes from each method
+deseq_genes <- rownames(res_sorted)[1:10]
+lda_genes <- names(top_lda)
+pca_genes <- rownames(top_targets)[1:10]
+
+# Get top 10 genes from LR (glmnet coefficients)
+lr_coefs_df <- as.data.frame(as.matrix(coef(model_LR, s = "lambda.min")))
+lr_coefs_df <- lr_coefs_df[lr_coefs_df[, 1] != 0, , drop = FALSE]
+lr_coefs_df <- lr_coefs_df[-1, , drop = FALSE]          # remove intercept row
+lr_genes    <- rownames(lr_coefs_df)[
+  order(abs(lr_coefs_df[, 1]), decreasing = TRUE)][1:10]
+
+# Build the gene list with all 4 methods
+gene_lists_all <- list(
+  DESeq2 = deseq_genes,
+  LDA    = lda_genes,
+  PCA    = pca_genes,
+  LR     = lr_genes
+)
+
+ggVennDiagram(gene_lists_all) +
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  labs(title = "Overlap of Top 10 Genes Across All Methods")
+
+
+```
+
+Heatmap to show expression of the overlapping genes.
+
+```{r}
+common_genes <- Reduce(intersect, list(
+  rownames(top_targets),
+  names(top_lda),
+  rownames(top_targets)
+))
+
+# Fall back to union if no triple overlap
+genes_to_plot <- if (length(common_genes) > 0) common_genes else Reduce(union, gene_lists_all)
+
+pheatmap(normalized_counts[genes_to_plot, ],
+  annotation_col    = colData,
+  clustering_method = "average",
+  scale             = "row",
+  main              = "Top Genes Identified Across All Methods",
+  fontsize          = 10
+)
+```
+
+To show the DESeq2 stats for those genes
+
+```{r}
+top_res <- res[genes_to_plot, ]
+top_res$gene <- rownames(top_res)
+
+ggplot(top_res, aes(x = reorder(gene, log2FoldChange), y = log2FoldChange, fill = padj)) +
+  geom_col() +
+  scale_fill_gradient(low = "red", high = "grey80") +
+  coord_flip() +
+  labs(title = "Log2 Fold Change of Top Consensus Genes",
+       x     = "Gene",
+       y     = "Log2 Fold Change",
+       fill  = "Adj. p-value") +
+  theme_minimal()
+```
+
+```{r}
+# DESeq2 and LDA consensus
+consensus_genes <- intersect(deseq_genes, lda_genes)
+cat("Consensus genes (DESeq2 + LDA):\n")
+print(consensus_genes)
+
+# Plot their expression across conditions
+pheatmap(normalized_counts[consensus_genes, ],
+         annotation_col    = colData,
+         scale             = "row",
+         clustering_method = "average",
+         main              = "Top Consensus Genes (DESeq2 + LDA)")
+```
+
+Final comparison table all methods
+
+```{r}
+# Print gene names per region
+cat("DESeq2 only:         ",
+    setdiff(deseq_genes, Reduce(union, list(lda_genes, pca_genes, lr_genes))), "\n")
+cat("LDA only:            ",
+    setdiff(lda_genes,   Reduce(union, list(deseq_genes, pca_genes, lr_genes))), "\n")
+cat("PCA only:            ",
+    setdiff(pca_genes,   Reduce(union, list(deseq_genes, lda_genes, lr_genes))), "\n")
+cat("LR only:             ",
+    setdiff(lr_genes,    Reduce(union, list(deseq_genes, lda_genes, pca_genes))), "\n")
+cat("DESeq2 & LDA:        ",
+    setdiff(intersect(deseq_genes, lda_genes),  Reduce(union, list(pca_genes, lr_genes))), "\n")
+cat("DESeq2 & LR:         ",
+    setdiff(intersect(deseq_genes, lr_genes),   Reduce(union, list(lda_genes, pca_genes))), "\n")
+cat("DESeq2 & PCA:        ",
+    setdiff(intersect(deseq_genes, pca_genes),  Reduce(union, list(lda_genes, lr_genes))), "\n")
+cat("LDA & LR:            ",
+    setdiff(intersect(lda_genes, lr_genes),     Reduce(union, list(deseq_genes, pca_genes))), "\n")
+cat("LDA & PCA:           ",
+    setdiff(intersect(lda_genes, pca_genes),    Reduce(union, list(deseq_genes, lr_genes))), "\n")
+cat("LR & PCA:            ",
+    setdiff(intersect(lr_genes, pca_genes),     Reduce(union, list(deseq_genes, lda_genes))), "\n")
+cat("DESeq2 & LDA & LR:   ",
+    setdiff(Reduce(intersect, list(deseq_genes, lda_genes, lr_genes)), pca_genes), "\n")
+cat("DESeq2 & LDA & PCA:  ",
+    setdiff(Reduce(intersect, list(deseq_genes, lda_genes, pca_genes)), lr_genes), "\n")
+cat("DESeq2 & LR & PCA:   ",
+    setdiff(Reduce(intersect, list(deseq_genes, lr_genes, pca_genes)), lda_genes), "\n")
+cat("LDA & LR & PCA:      ",
+    setdiff(Reduce(intersect, list(lda_genes, lr_genes, pca_genes)), deseq_genes), "\n")
+cat("All four:            ",
+    Reduce(intersect, list(deseq_genes, lda_genes, pca_genes, lr_genes)), "\n")
+```
