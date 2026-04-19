@@ -1,2 +1,0 @@
-Sample	fastqc-percent_duplicates	fastqc-percent_gc	fastqc-avg_sequence_length	fastqc-median_sequence_length	fastqc-percent_fails	fastqc-total_sequences
-GN6_hifix30	0.011706860220087378	50.0	17563.09886443456	16749	20.0	0.008542

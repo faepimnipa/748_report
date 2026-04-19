@@ -1,2 +1,0 @@
-Module	Section	Sample Name	Source
-FastQC	all_sections	GN6_hifix30	/home/faepimnipa/748/report/result/fastQC_result/GN6_hifix30_fastqc.zip
