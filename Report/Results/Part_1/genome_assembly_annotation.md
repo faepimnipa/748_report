@@ -55,6 +55,12 @@ bakta --db ~/tmp_data/db-light --output ~/748/report/result/bakta_GN6 --prefix G
 prokka --outdir ~/748/report/result/prokka_GN6 --prefix GN6_prokka assembly.fasta
 ```
 ## __5. Target Gene Extraction__
-The final phase involves isolating specific loci of interest for downstream molecular analysis. In this study, genes 
+The final phase involves isolating specific loci of interest for downstream molecular analysis. Identified and extracted specific genes of interest from the Bakta results.
+__Command__
+
+```bash
+grep -A 1 "Gene name" ~/748/report/result/bakta_GN6/*.faa > [gene_name]_protein.fasta
+```
+
 
 
