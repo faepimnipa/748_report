@@ -52,5 +52,7 @@ The `Report` folder contains the following `md` files, which list the command li
 - 
 
 The `Results` folder contains the following files:
-- `
+- `Part_1` contains: Genome Assembly and Genome Annotation results
+- `Part_2` contains: Machine Learning
+- `Part_3` contains: Structural Bioinformatics
 
