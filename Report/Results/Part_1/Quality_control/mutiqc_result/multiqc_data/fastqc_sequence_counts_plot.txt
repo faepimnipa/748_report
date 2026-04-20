@@ -1,0 +1,2 @@
+Sample	Unique Reads	Duplicate Reads
+GN6_hifix30	8542.0	0.0
