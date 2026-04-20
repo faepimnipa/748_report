@@ -1,0 +1,115 @@
+- STAGE: Before start
+  args: []
+  config_dir: ''
+  del_after: []
+  job_uuid: SPAdes_Before_start_BD4522CSVUZC7PCBIIGJ7GD85MFKO5K3
+  mpi_support: false
+  output_files: []
+  path: 'true'
+  short_name: before_start
+- STAGE: Assembling
+  args: []
+  config_dir: ''
+  del_after: []
+  job_uuid: SPAdes_Assembling_TB969CSGNWNGHFI9VC2AKQXCQV4YM7N5
+  mpi_support: false
+  output_files: []
+  path: 'true'
+  short_name: as_start
+- STAGE: K21
+  args:
+  - /home/faepimnipa/748/report/result/GN6_spades/K21/configs/config.info
+  config_dir: K21
+  del_after: []
+  job_uuid: hpcSPAdes_K21_9RQGVMEQOHX2U9NCFEGAFB2RVIBOTUZR
+  mpi_support: true
+  output_files: []
+  path: /home/faepimnipa/miniconda3/envs/genomics_env/bin/{spades_core}
+  short_name: k21
+- STAGE: K55
+  args:
+  - /home/faepimnipa/748/report/result/GN6_spades/K55/configs/config.info
+  config_dir: K55
+  del_after: []
+  job_uuid: hpcSPAdes_K55_AY5T8LUXY7BS6WBFVXO0Q3EEPSRYZHEZ
+  mpi_support: true
+  output_files: []
+  path: /home/faepimnipa/miniconda3/envs/genomics_env/bin/{spades_core}
+  short_name: k55
+- STAGE: K95
+  args:
+  - /home/faepimnipa/748/report/result/GN6_spades/K95/configs/config.info
+  config_dir: K95
+  del_after: []
+  job_uuid: hpcSPAdes_K95_EBG3OHIQRS0PMX1Q3YBH33FGABPHSWS0
+  mpi_support: true
+  output_files: []
+  path: /home/faepimnipa/miniconda3/envs/genomics_env/bin/{spades_core}
+  short_name: k95
+- STAGE: Copy files
+  args:
+  - /home/faepimnipa/miniconda3/envs/genomics_env/share/spades/spades_pipeline/scripts/copy_files.py
+  - /home/faepimnipa/748/report/result/GN6_spades/K95/before_rr.fasta
+  - /home/faepimnipa/748/report/result/GN6_spades/before_rr.fasta
+  - /home/faepimnipa/748/report/result/GN6_spades/K95/assembly_graph_after_simplification.gfa
+  - /home/faepimnipa/748/report/result/GN6_spades/assembly_graph_after_simplification.gfa
+  - /home/faepimnipa/748/report/result/GN6_spades/K95/final_contigs.fasta
+  - /home/faepimnipa/748/report/result/GN6_spades/contigs.fasta
+  - /home/faepimnipa/748/report/result/GN6_spades/K95/first_pe_contigs.fasta
+  - /home/faepimnipa/748/report/result/GN6_spades/first_pe_contigs.fasta
+  - /home/faepimnipa/748/report/result/GN6_spades/K95/strain_graph.gfa
+  - /home/faepimnipa/748/report/result/GN6_spades/strain_graph.gfa
+  - /home/faepimnipa/748/report/result/GN6_spades/K95/scaffolds.fasta
+  - /home/faepimnipa/748/report/result/GN6_spades/scaffolds.fasta
+  - /home/faepimnipa/748/report/result/GN6_spades/K95/scaffolds.paths
+  - /home/faepimnipa/748/report/result/GN6_spades/scaffolds.paths
+  - /home/faepimnipa/748/report/result/GN6_spades/K95/assembly_graph_with_scaffolds.gfa
+  - /home/faepimnipa/748/report/result/GN6_spades/assembly_graph_with_scaffolds.gfa
+  - /home/faepimnipa/748/report/result/GN6_spades/K95/assembly_graph.fastg
+  - /home/faepimnipa/748/report/result/GN6_spades/assembly_graph.fastg
+  - /home/faepimnipa/748/report/result/GN6_spades/K95/final_contigs.paths
+  - /home/faepimnipa/748/report/result/GN6_spades/contigs.paths
+  config_dir: ''
+  del_after:
+  - .bin_reads
+  - tmp/spades_xfmmj3aw
+  job_uuid: SPAdes_Copy_files_XXX9CWATQIPAKWQYXLQ0B9YJ330D9KUP
+  mpi_support: false
+  output_files: []
+  path: /home/faepimnipa/miniconda3/envs/genomics_env/bin/python3
+  short_name: copy_files
+- STAGE: Assembling
+  args: []
+  config_dir: ''
+  del_after: []
+  job_uuid: SPAdes_Assembling_1K6RYW90MAKQ9C55UX25NITF4E9YQMLR
+  mpi_support: false
+  output_files: []
+  path: 'true'
+  short_name: as_finish
+- STAGE: Breaking scaffolds
+  args:
+  - /home/faepimnipa/miniconda3/envs/genomics_env/share/spades/spades_pipeline/scripts/breaking_scaffolds_script.py
+  - --result_scaffolds_filename
+  - /home/faepimnipa/748/report/result/GN6_spades/scaffolds.fasta
+  - --misc_dir
+  - /home/faepimnipa/748/report/result/GN6_spades/misc
+  - --threshold_for_breaking_scaffolds
+  - '3'
+  config_dir: ''
+  del_after: []
+  job_uuid: SPAdes_Breaking_scaffolds_S36KDDAUYYI8N92PNIJ9HVRW7BK32M0J
+  mpi_support: false
+  output_files: []
+  path: /home/faepimnipa/miniconda3/envs/genomics_env/bin/python3
+  short_name: bs
+- STAGE: Terminate
+  args: []
+  config_dir: ''
+  del_after:
+  - configs
+  job_uuid: SPAdes_Terminate_5JIUSRN6AQRS2O8GVZOFL6B6DSC7M7AC
+  mpi_support: false
+  output_files: []
+  path: 'true'
+  short_name: terminate

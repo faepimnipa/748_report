@@ -1,0 +1,4 @@
+- "number": !!int "1"
+  "single reads":
+  - "/home/faepimnipa/748/report/dataset/GN6_hifix30.fastq"
+  "type": "single"
