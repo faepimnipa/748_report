@@ -62,5 +62,10 @@ __Command__
 grep -A 1 "Gene name" ~/748/report/result/bakta_GN6/*.faa > [gene_name]_protein.fasta
 ```
 
+## __6. Visualise graph__
+__Command__
 
+```bash
+Bandage image assembly_graph.gfa assembly_visualization.png
+```
 
