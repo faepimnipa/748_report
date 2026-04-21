@@ -21,3 +21,21 @@ grep -A 1 "b2952" "$RESULT/bakta_GN6"/*.ffn > b2952_nucleotide.fasta
 grep -A 1 "gltB" "$RESULT/prokka_GN6/GN6_prokka.ffn"  > target_genes_nucleotide.fasta
 grep -A 1 "frmA" "$RESULT/prokka_GN6/GN6_prokka.ffn"  > target_genes_nucleotide.fasta
 grep -A 1 "lacZ" "$RESULT/prokka_GN6/GN6_prokka.ffn"  > target_genes_nucleotide.fasta
+
+# PyMOL
+# To put them side by side by activating grid mode 
+set grid_mode, on
+
+# turn off
+set grid_mode, off
+
+# Comparing this prediction to known modes of proteinase-inhibitor interaction 
+colour yellow, colabfold_complex and chain A
+colour orange, colabfold_complex and chain B
+
+colabfold_complex / A / align / to molecule (*/CA)
+/2sic
+
+zoom colabfold_complex and chain B and resid 61-69
+
+
