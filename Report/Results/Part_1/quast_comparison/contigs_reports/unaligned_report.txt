@@ -1,0 +1,8 @@
+All statistics are based on contigs of size >= 500 bp, unless otherwise noted (e.g., "# contigs (>= 0 bp)" and "Total length (>= 0 bp)" include all contigs).
+
+Assembly                       assembly  scaffolds
+# fully unaligned contigs      2         4        
+Fully unaligned length         119498    112913   
+# partially unaligned contigs  2         4        
+Partially unaligned length     1189305   1157672  
+# N's                          0         100      
