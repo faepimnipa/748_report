@@ -1,8 +1,6 @@
 #!/bin/bash
-# ============================================================
 # Part 1 – Genome Assembly and Annotation Benchmarking
 # Prokaryotic Genome Assembly & Annotation Pipeline
-# ============================================================
 
 set -euo pipefail
 
