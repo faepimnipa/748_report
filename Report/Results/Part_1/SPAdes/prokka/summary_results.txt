@@ -1,0 +1,6 @@
+Count  Feature
+5109   CDS
+1      ftype
+22     rRNA
+92     tRNA
+1      tmRNA
