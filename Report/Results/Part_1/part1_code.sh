@@ -99,5 +99,8 @@ echo "=== Bandage – Assembly Graph Visualisation ==="
 Bandage image "$RESULT/GN6_long/assembly_graph.gfa" \
               "$RESULT/GN6_long/assembly_visualization.png"
 
+(echo -e "Count\tFeature"; cut -f2 GN6_flye_prokka.tsv | sort | uniq -c) | column -t > summary_results.txt
+(echo -e "Count\tFeature"; cut -f2 GN6_spades_prokka.tsv | sort | uniq -c) | column -t > summary_results.txt
+
 echo ""
 echo "=== Pipeline Complete ==="
