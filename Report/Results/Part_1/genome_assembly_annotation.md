@@ -5,6 +5,7 @@ This report details the bioinformatics pipline utilised for the _de novo_ assemb
 The initial stage involves evaluating the raw sequencing reads to ensure data integrity and identify poteintail biases before assembly.
 - __FastQC__: Analyses the `fastq` files to provide metrics on base quality scores (Phred), GC content, and sequence length distribution.
 - __MultiQC__: Aggregates individual reports into a single summary for streamlined comparative analysis.
+
 __Command__
 
 ```bash
@@ -22,6 +23,7 @@ The __Per Base Sequence Quality__ plot is the primary metric for data integrity.
 The objective of this stage is to reconstruct the original genome from the fragmented reads. Two algorithmic approaches, Flye and SPAdes were employed to benchmark performance.
 - __Flye__: Specifically optimised for long reads assembler for PacBio data, it utilises a repeat graph approach to resolve complex metagenomes 
 - __SPAdes__: A multi-k-mer assembler that can be adapted for HiFi data to provide a comparative structural scaffold. It generates high-accuracy configs by using multi-sized de Bruiji graphs to mitigate the effects of sequencing errors and uneven coverage.
+
 __Command__
 
 ```bash
@@ -34,7 +36,8 @@ spades.py --only-assembler -k 21,55,95 -s GN6_hifix30.fastq -o ~/748/report/resu
 
 ## __3. Assembly Benchmarking and Evaluation (QUAST)__
 To determine the biological accuracy of the assembly, __QUAST__ (Quality Assessment Tool for Genome Assemblies) is used to compare the _de novo_ configs against a reference genome (_E.coli_ K12).
-__command__
+
+__Command__
 
 ```bash
 # Evaluates assembly metrics against a reference FASTA file
@@ -45,6 +48,7 @@ quast.py ~/748/report/result/GN6_long/assembly.fasta \
 
 ## __4. Functional Annotation and Gene Calling__
 Annotation involves identifying the locations of genes (CDS, tRNA, rRNA) and assigning biological functions to them. Two pipelines were utilised, __Bakta__ (modern, database-rich) and __Prokka__ (rapid, industry standard).
+
 __Command__
 
 ```bash
@@ -56,6 +60,7 @@ prokka --outdir ~/748/report/result/prokka_GN6 --prefix GN6_prokka assembly.fast
 ```
 ## __5. Target Gene Extraction__
 The final phase involves isolating specific loci of interest for downstream molecular analysis. Identified and extracted specific genes of interest from the Bakta results.
+
 __Command__
 
 ```bash
@@ -63,6 +68,7 @@ grep -A 1 "Gene name" ~/748/report/result/bakta_GN6/*.faa > [gene_name]_protein.
 ```
 
 ## __6. Visualise graph__
+
 __Command__
 
 ```bash
